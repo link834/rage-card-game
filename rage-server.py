@@ -2,17 +2,25 @@
 
 # WebSockets server to play the game Rage
 
+import sys
 import asyncio
 import json
 import logging
 import websockets
 import random
 
-serverHost = '192.168.0.3'
-port = 16427
 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
+
+
+if len(sys.argv) < 3:
+    logging.error("\r\n\tUSAGE: " + sys.argv[0] + " <host or ip to bind to> <port>")
+    sys.exit()
+
+serverHost = sys.argv[1]
+port = sys.argv[2]
+
 
 USERS = set()
 STATE = {
