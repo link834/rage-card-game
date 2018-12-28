@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# WebSockets server to play the game Rage
+# WebSockets server to synchronize states between Web Applications
 
 import sys
 import asyncio
@@ -23,25 +23,6 @@ port = sys.argv[2]
 
 
 USERS = set()
-STATE = {
-    'game_id': 0,
-    'players_allowed': 0
-}
-
-
-##### SERVER EVENTS #####
-
-# These 3 events are for the initial synchronization connection
-def event_no_game_started():
-    return json.dumps({'type': 'no_game_started'})
-def event_game_full():
-    return json.dumps({'type': 'game_full'})
-def event_game_started():
-    return json.dumps({'type': 'game_started', **STATE})
-
-# This event is for syncing the number of online users after connect/disconnect
-def users_event():
-    return json.dumps({'type': 'users', 'count': len(USERS)})
 
 
 ##### NOTIFIERS #####
@@ -72,32 +53,14 @@ async def unregister(websocket):
     USERS.remove(websocket)
     await notify_users()
 
-def update_state(eventJson):
-    for key in eventJson:
-        if key == 'type':
-            continue
-        STATE[key] = eventJson[key]
-        logging.info(key + ' = ' + str(STATE[key]))
-
 async def serverFunction(websocket, path):
     # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
-        # check if a game is running or full when a user accesses the page
-        if STATE['game_id'] == 0:
-            await websocket.send(event_no_game_started())
-        else:
-            if len(USERS) > STATE['players_allowed']:
-                await websocket.send(event_game_full())
-            else:
-                await websocket.send(event_game_started())
-
         # relay the command recieved from the Web Interface
-        # update the STATE object if the command is update_state
         async for event in websocket:
             eventJson = json.loads(event)
-            if eventJson['type'] == 'update_state':
-                update_state(eventJson)
+            logging.info('relaying event: ' + eventJson['type'])
             await notify_event(event)
 
     finally:
