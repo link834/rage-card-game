@@ -8,6 +8,7 @@ import json
 import logging
 import websockets
 import random
+import os
 
 
 logging.basicConfig()
@@ -21,6 +22,7 @@ if len(sys.argv) < 3:
 serverHost = sys.argv[1]
 port = sys.argv[2]
 
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 USERS = set()
 
@@ -29,6 +31,8 @@ USERS = set()
 
 # General notify function for all events
 async def notify_event(event):
+    eventJson = json.loads(event)
+    logging.info('relaying event: ' + eventJson['type'])
     await asyncio.wait([user.send(event) for user in USERS])
 
 # General notify function for all server events
@@ -57,11 +61,18 @@ async def serverFunction(websocket, path):
     # register(websocket) sends user_event() to websocket
     await register(websocket)
     try:
+
         # relay the command recieved from the Web Interface
         async for event in websocket:
-            eventJson = json.loads(event)
-            logging.info('relaying event: ' + eventJson['type'])
+            
             await notify_event(event)
+            
+            # check if the server should be stopped
+            eventJson = json.loads(event)
+            if eventJson['type'] == 'kill':
+                logging.info('server stop')
+                asyncio.get_event_loop().stop()
+
 
     finally:
         await unregister(websocket)
