@@ -75,12 +75,10 @@
 
             const createWebSocket = () => {
                 const addrInfo = getSockAddrInfo();
-                return new WebSocket(addrInfo.addr);
+                return new WebSocket("ws://192.168.0.3:16427/");
             }
 
             const minus = document.querySelector('.minus'),
-                killserver = document.querySelector('.kill'),
-                startserver = document.querySelector('.start'),
                 value = document.querySelector('.value'),
                 users = document.querySelector('.users'),
                 numpl = document.getElementById('num_players');
