@@ -17,7 +17,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 
-if len(sys.argv) < 4:
+if len(sys.argv) < 3:
     logging.error("\r\n\tUSAGE: " + sys.argv[0] + " <host or ip to bind to> <port>")
     sys.exit()
 
