@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket demo</title>
+        <meta charset="utf-8"/>
+        <style type="text/css">
+            body {
+                font-family: "Courier New", sans-serif;
+                text-align: center;
+            }
+            .buttons {
+                font-size: 4em;
+                display: flex;
+                justify-content: center;
+            }
+            .button, .value {
+                line-height: 1;
+                padding: 2rem;
+                margin: 2rem;
+                border: medium solid;
+                min-height: 1em;
+                min-width: 1em;
+            }
+            .button {
+                cursor: pointer;
+                user-select: none;
+            }
+            .hidden {
+                display: none;
+            }
+            .minus {
+                color: red;
+            }
+            .plus {
+                color: green;
+            }
+            .value {
+                min-width: 2em;
+            }
+            .state {
+                font-size: 2em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="buttons">
+            <div class="minus button">New Game</div>
+            <div class="value">?</div>
+            <select id="num_players">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+            </select>
+        </div>
+        <div class="state">
+            <span class="users">?</span> online
+        </div>
+        <div class="buttons">
+            <form action="server.php">
+                <input type="text" id="start" name="start" value="true">
+                <input type="text" id="ip" name="ip" value="localhost" />
+                <input type="text" id="port" name="port" value="16427" />
+                <input type="submit" value="Start Server" class="start plus button" />
+                <input type="submit" value="Stop Server" class="kill minus button" />
+            </form>
+        </div>
+        <script>
+
+            const randInRange = (min, max) => {
+                return Math.floor(Math.random() * (+max - +min)) + +min
+            }
+
+            const getSockAddrInfo = () => {
+                const ip = document.getElementById("ip").value;
+                const port = document.getElementById("port").value;
+                return {
+                    addr: "ws://" + ip + ":" + port + "/",
+                    ip: ip,
+                    port: port
+                };
+            }
+
+            const createWebSocket = () => {
+                const addrInfo = getSockAddrInfo();
+                return new WebSocket(addrInfo.addr);
+            }
+
+            const minus = document.querySelector('.minus'),
+                killserver = document.querySelector('.kill'),
+                startserver = document.querySelector('.start'),
+                value = document.querySelector('.value'),
+                users = document.querySelector('.users'),
+                numpl = document.getElementById('num_players');
+
+
+            let websocket = createWebSocket();
+
+            startserver.onclick = event => {
+                // var xhttp = new XMLHttpRequest();
+                // xhttp.onreadystatechange = function() {
+                //     if (this.readyState == 4 && this.status == 200) {
+                //     }
+                // };
+                // const addrInfo = getSockAddrInfo();
+                // xhttp.open("GET", "server.php?start=true&ip=" + addrInfo.ip + "&port=" + addrInfo.port, true);
+                // xhttp.send();
+                websocket = createWebSocket();
+                console.log(websocket);
+            }
+
+            minus.onclick = function (event) {
+                const num_players = parseInt(numpl.value, 10);
+                websocket.send(JSON.stringify({
+                    type: 'update_state',
+                    game_id: randInRange(10000, 99999),
+                    players_allowed: num_players,
+                    p_sel_idx: numpl.selectedIndex
+                }));
+            }
+
+            killserver.onclick = event => {
+                websocket.send (JSON.stringify({
+                    type: 'kill'
+                }))
+            }
+
+            websocket.onmessage = function (event) {
+                info = JSON.parse(event.data);
+                console.log(info);
+                switch (info.type) {
+                    case 'no_game_started':
+                        value.textContent = "No Games Started";
+                        break;
+                    case 'game_full':
+                        value.textContent = "Current Game is Full";
+                        minus.classList.add("hidden");
+                        numpl.classList.add("hidden");
+                        break;
+                    case 'game_started':
+                        value.textContent = info.game_id;
+                        numpl.selectedIndex = info.p_sel_idx;
+                        break;
+                    case 'users':
+                        users.textContent = (
+                            info.data.toString() + " user" +
+                            (info.count == 1 ? "" : "s"));
+                        break;
+                    case 'update_state':
+                        // for (let key in info) {
+                        //     console.log(key);
+                        // }
+                        value.textContent = info.game_id;
+                        break;
+                    case 'kill':
+                        console.log("server stopped");
+                        break;
+                    default:
+                        console.error("unsupported event", info);
+                }
+            };
+
+        </script>
+    </body>
+</html>

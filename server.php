@@ -1,9 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<h1>Test</h1>
+
 <?php
-    if ($_POST['start']) {
-        echo exec("python3 ./rage-server.py $_POST['ip'] $POST['port'] &");
-    }
+    /*if ($_POST['start']) {
+        echo exec("python3 ./rage-server.py $_POST['ip'] $_POST['port'] &");
+        echo "<h1>python3 ./rage-server.py $_POST['ip'] $_POST['port'] &</h1>";
+    }*/
 
     if ($_GET['start']) {
-        echo exec("python3 ./rage-server.py $_GET['ip'] $GET['port'] &");
+        echo shell_exec("python3 ./rage-server.py {$_GET['ip']} {$_GET['port']} &");
+        echo "<h1>python3 ./rage-server.py " . $_GET['ip'] . " " . $_GET['port'] . " &</h1>";
     }
 ?>
+
+</body>
+</html>
