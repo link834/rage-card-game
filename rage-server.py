@@ -17,12 +17,13 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 4:
     logging.error("\r\n\tUSAGE: " + sys.argv[0] + " <host or ip to bind to> <port>")
     sys.exit()
 
 serverHost = sys.argv[1]
 port = sys.argv[2]
+certname = sys.argv[3]
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
@@ -83,8 +84,8 @@ async def serverFunction(websocket, path):
 ##### RUN SERVER #####
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-ssl_context.load_cert_chain(os.environ['WEB_STUFF'])
-logging.info(os.environ['WEB_STUFF'])
+ssl_context.load_cert_chain(certname)
+logging.info(certname)
 start_server = websockets.serve(serverFunction, serverHost, port, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(start_server)
