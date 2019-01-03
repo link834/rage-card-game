@@ -63,41 +63,13 @@
                 return Math.floor(Math.random() * (+max - +min)) + +min
             }
 
-            const getSockAddrInfo = () => {
-                const ip = document.getElementById("ip").value;
-                const port = document.getElementById("port").value;
-                return {
-                    addr: "ws://" + ip + ":" + port + "/",
-                    ip: ip,
-                    port: port
-                };
-            }
-
-            const createWebSocket = () => {
-                const addrInfo = getSockAddrInfo();
-                return new WebSocket("ws://192.168.0.3:16427/");
-            }
-
             const minus = document.querySelector('.minus'),
                 value = document.querySelector('.value'),
                 users = document.querySelector('.users'),
                 numpl = document.getElementById('num_players');
 
 
-            let websocket = createWebSocket();
-
-            startserver.onclick = event => {
-                // var xhttp = new XMLHttpRequest();
-                // xhttp.onreadystatechange = function() {
-                //     if (this.readyState == 4 && this.status == 200) {
-                //     }
-                // };
-                // const addrInfo = getSockAddrInfo();
-                // xhttp.open("GET", "server.php?start=true&ip=" + addrInfo.ip + "&port=" + addrInfo.port, true);
-                // xhttp.send();
-                websocket = createWebSocket();
-                console.log(websocket);
-            }
+            const websocket = new WebSocket("ws://192.168.0.3:16427/");
 
             minus.onclick = function (event) {
                 const num_players = parseInt(numpl.value, 10);
@@ -109,11 +81,11 @@
                 }));
             }
 
-            killserver.onclick = event => {
-                websocket.send (JSON.stringify({
-                    type: 'kill'
-                }))
-            }
+            // killserver.onclick = event => {
+            //     websocket.send (JSON.stringify({
+            //         type: 'kill'
+            //     }))
+            // }
 
             websocket.onmessage = function (event) {
                 info = JSON.parse(event.data);
