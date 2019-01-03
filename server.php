@@ -14,6 +14,8 @@
 </form>
 
 <?php
+    $certpath = getenv('WEB_STUFF');
+
     /*if ($_POST['start']) {
         echo exec("python3 ./rage-server.py $_POST['ip'] $_POST['port'] &");
         echo "<h1>python3 ./rage-server.py $_POST['ip'] $_POST['port'] &</h1>";

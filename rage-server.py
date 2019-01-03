@@ -7,6 +7,8 @@ import asyncio
 import json
 import logging
 import websockets
+import ssl
+import pathlib
 import random
 import os
 
@@ -15,7 +17,7 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.INFO)
 
 
-if len(sys.argv) < 3:
+if len(sys.argv) < 4:
     logging.error("\r\n\tUSAGE: " + sys.argv[0] + " <host or ip to bind to> <port>")
     sys.exit()
 
@@ -66,7 +68,7 @@ async def serverFunction(websocket, path):
         async for event in websocket:
             
             await notify_event(event)
-            
+
             # check if the server should be stopped
             eventJson = json.loads(event)
             if eventJson['type'] == 'kill':
@@ -80,5 +82,9 @@ async def serverFunction(websocket, path):
 
 ##### RUN SERVER #####
 
-asyncio.get_event_loop().run_until_complete(websockets.serve(serverFunction, serverHost, port))
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain(os.environ['WEB_STUFF'])
+start_server = websockets.serve(serverFunction, serverHost, port, ssl=ssl_context)
+
+asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
