@@ -69,7 +69,7 @@
                 numpl = document.getElementById('num_players');
 
 
-            const websocket = new WebSocket("ws://192.168.0.3:16427/");
+            const websocket = new WebSocket("wss://192.168.0.3:16427/");
 
             minus.onclick = function (event) {
                 const num_players = parseInt(numpl.value, 10);
