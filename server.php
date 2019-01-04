@@ -19,7 +19,8 @@
         echo exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
         echo "<h1>python3 ./rage-server.py " . $ip . " " . $port . " &</h1>";
         echo '$nunya = ' . $nunya;
-        echo 'USER = ' . $_ENV["USER"];
+        var_export($_ENV);
+        var_export($_SERVER);
     }
 
     if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
