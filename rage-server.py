@@ -86,7 +86,6 @@ async def serverFunction(websocket, path):
 
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain(certname, keyfile=certname2)
-logging.info(certname)
 start_server = websockets.serve(serverFunction, serverHost, port, ssl=ssl_context)
 
 asyncio.get_event_loop().run_until_complete(start_server)

@@ -14,15 +14,14 @@
 </form>
 
 <?php
-    /*if ($_POST['start']) {
-        echo exec("python3 ./rage-server.py $_POST['ip'] $_POST['port'] &");
-        echo "<h1>python3 ./rage-server.py $_POST['ip'] $_POST['port'] &</h1>";
-    }*/
-
-    if ($_GET['start']) {
-        echo shell_exec("python3 ./rage-server.py {$_GET['ip']} {$_GET['port']} &");
-        echo "<h1>python3 ./rage-server.py " . $_GET['ip'] . " " . $_GET['port'] . " &</h1>";
+    function startServer($ip, $port) {
+        $nunya = getenv("ZZ_WEB_STUFF");
+        echo shell_exec("python3 ./rage-server.py {$ip} {$port} {$nunya}  &");
+        echo "<h1>python3 ./rage-server.py " . $ip . " " . $port . " &</h1>";
     }
+
+    if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
+    if ($_GET['start']) {startServer($_GET['ip'], $_GET['port']);}
 ?>
 
 </body>
