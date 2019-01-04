@@ -16,7 +16,7 @@
 <?php
     function startServer($ip, $port) {
         $nunya = $_SERVER['NUNYA'];
-        echo exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
+        echo shell_exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
         echo "<h1>python3 ./rage-server.py " . $ip . " " . $port . " &</h1>";
         echo '<hr>$nunya = ' . $nunya . "<hr>";
     }
