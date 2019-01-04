@@ -15,10 +15,10 @@
 
 <?php
     function startServer($ip, $port) {
-        $nunya = getenv("ZZ_WEB_STUFF");
-        echo shell_exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
+        $nunya = getenv('ZZ_WEB_STUFF', true);
+        echo exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
         echo "<h1>python3 ./rage-server.py " . $ip . " " . $port . " &</h1>";
-        echo $nunya;
+        echo '$nunya = ' . $nunya;
     }
 
     if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
