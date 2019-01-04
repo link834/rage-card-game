@@ -16,8 +16,7 @@
 <?php
     function startServer($ip, $port) {
         $nunya = $_SERVER['NUNYA'];
-        echo passthru("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
-        echo "<hr>sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &<hr>";
+        echo passthru("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} > /dev/null 2>&1 &");
     }
 
     if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
