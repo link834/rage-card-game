@@ -16,7 +16,7 @@
 <?php
     function startServer($ip, $port) {
         $nunya = getenv("ZZ_WEB_STUFF");
-        echo shell_exec("python3 ./rage-server.py {$ip} {$port} {$nunya}  &");
+        echo shell_exec("sudo python3 ./rage-server.py {$ip} {$port} {$nunya} &");
         echo "<h1>python3 ./rage-server.py " . $ip . " " . $port . " &</h1>";
     }
 
