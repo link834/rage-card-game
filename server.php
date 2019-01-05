@@ -7,11 +7,23 @@
 <h1>Test</h1>
 
 <form action="server.php" method="post">
-    <input type="text" id="ip" name="ip" required />
-    <input type="text" id="port" name="port" required />
-    <input type="submit" name="start" value="Start Server" />
-    <input type="submit" name="stop" value="Stop Server" />
+    <div><input type="text" id="ip" name="ip" required /></div>
+    <div><input type="text" id="port" name="port" required /></div>
+    <div><input type="submit" name="start" value="Start Server" /></div>
 </form>
+<hr>
+<div>
+    <button id="stopServer" type="button">Stop Server</button>
+    <script>
+        const stopBtn = document.getElementById("stopServer");
+        stopBtn.onclick = event => {
+            const websocket = new WebSocket("wss://imothilightortil.dynamic-dns.net:16427/");
+            websocket.send(JSON.stringify({
+                type: 'kill'
+            }));
+        }
+    </script>
+</div>
 
 <?php
     function startServer($ip, $port) {
@@ -21,23 +33,11 @@
         echo exec(
             "sudo python3 ./rage-server.py {$eip} {$eport} {$nunya} > /dev/null 2>&1 &"
         );
-        echo exec(
-            "echo $! > server.pid"
-        );
-    }
-
-    function stopServer() {
-        echo "<h1>HI</h1>";
     }
 
     if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
-    if ($_POST['stop']) {stopServer();}
     //if ($_GET['start']) {startServer($_GET['ip'], $_GET['port']);}
 ?>
-
-<script>
-    document.getElementByName
-</script>
 
 </body>
 </html>
