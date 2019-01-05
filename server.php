@@ -16,21 +16,28 @@
 <?php
     function startServer($ip, $port) {
         $nunya = $_SERVER['NUNYA'];
-        echo system(
-            "sudo python3 ./rage-server.py {$ip} {$port} {$nunya} > /dev/null 2>&1 & echo $! > ./python.pid"
+        $eip = escapeshellarg($ip);
+        $eport = escapeshellarg($port);
+        echo exec(
+            "sudo python3 ./rage-server.py {$eip} {$eport} {$nunya} > /dev/null 2>&1 &"
+        );
+        echo exec(
+            "echo $! > server.pid"
         );
     }
 
     function stopServer() {
-        echo system(
-            'sudo kill $(cat ./python.pid)'
-        );
+        echo "<h1>HI</h1>";
     }
 
     if ($_POST['start']) {startServer($_POST['ip'], $_POST['port']);}
     if ($_POST['stop']) {stopServer();}
     //if ($_GET['start']) {startServer($_GET['ip'], $_GET['port']);}
 ?>
+
+<script>
+    document.getElementByName
+</script>
 
 </body>
 </html>
