@@ -15,9 +15,9 @@
 <div>
     <button id="stopServer" type="button">Stop Server</button>
     <script>
+        const websocket = new WebSocket("wss://imothilightortil.dynamic-dns.net:16427/");
         const stopBtn = document.getElementById("stopServer");
         stopBtn.onclick = event => {
-            const websocket = new WebSocket("wss://imothilightortil.dynamic-dns.net:16427/");
             websocket.send(JSON.stringify({
                 type: 'kill'
             }));
